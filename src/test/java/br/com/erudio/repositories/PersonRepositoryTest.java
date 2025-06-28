@@ -40,4 +40,17 @@ class PersonRepositoryTest {
         assertNotNull(personList);
         assertEquals(2, personList.size());
     }
+
+    @DisplayName("Given Person Object when Save then Return Saved Person")
+    @Test
+    void testGivenPersonObject_whenFindByID_thenReturnPersonObject() {
+        Person person1 = new Person("Gabriel", "K", "gabriel@gmail.com", "vg", "m");
+
+        repository.save(person1);
+
+        Person savedPerson = repository.findById(person1.getId()).get();
+
+        assertNotNull(savedPerson);
+        assertEquals(person1.getId(), savedPerson.getId());
+    }
 }
