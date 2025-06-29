@@ -1,6 +1,7 @@
 package br.com.erudio.repositories;
 
 import br.com.erudio.model.Person;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,152 +17,192 @@ class PersonRepositoryTest {
     @Autowired
     private PersonRepository repository;
 
-    @DisplayName("Given Person Object when Save then Return Saved Person")
+    private Person person0;
+
+    @BeforeEach
+    public void setup() {
+        // Given / Arrange
+        person0 = new Person(
+                "Leandro",
+                "Costa",
+                "leandro@erudio.com.br",
+                "Uberlândia - Minas Gerais - Brasil",
+                "Male");
+    }
+
+    @DisplayName("JUnit test for Given Person Object when Save then Return Saved Person")
     @Test
     void testGivenPersonObject_whenSave_thenReturnSavedPerson() {
-        Person person0 = new Person("Gabriel", "K", "gabriel@gmail.com", "vg", "m");
 
+        // Given / Arrange
+
+        // When / Act
         Person savedPerson = repository.save(person0);
 
+        // Then / Assert
         assertNotNull(savedPerson);
         assertTrue(savedPerson.getId() > 0);
     }
 
-    @DisplayName("Given Person Object when Save then Return Saved Person")
+    @DisplayName("JUnit test for Given Person List when findAll then Return Person List")
     @Test
-    void testGivenPersonObject_whenFindAll_thenReturnPersonList() {
-        Person person0 = new Person("Gabriel", "K", "gabriel@gmail.com", "vg", "m");
-        Person person1 = new Person("Gabriel", "K", "gabriel@gmail.com", "vg", "m");
+    void testGivenPersonList_whenFindAll_thenReturnPersonList() {
+
+        // Given / Arrange
+
+        Person person1 = new Person("Leonardo",
+                "Costa",
+                "leonardo@erudio.com.br",
+                "Uberlândia - Minas Gerais - Brasil", "Male");
 
         repository.save(person0);
         repository.save(person1);
 
+        // When / Act
         List<Person> personList = repository.findAll();
 
+        // Then / Assert
         assertNotNull(personList);
         assertEquals(2, personList.size());
     }
 
-    @DisplayName("Given Person Object when Save then Return Saved Person")
+    @DisplayName("JUnit test for Given Person Object when findByID then Return Person Object")
     @Test
     void testGivenPersonObject_whenFindByID_thenReturnPersonObject() {
-        Person person1 = new Person("Gabriel", "K", "gabriel@gmail.com", "vg", "m");
 
-        repository.save(person1);
+        // Given / Arrange
+        repository.save(person0);
 
-        Person savedPerson = repository.findById(person1.getId()).get();
+        // When / Act
+        Person savedPerson = repository.findById(person0.getId()).get();
 
+        // Then / Assert
         assertNotNull(savedPerson);
-        assertEquals(person1.getId(), savedPerson.getId());
+        assertEquals(person0.getId(), savedPerson.getId());
     }
 
-    @DisplayName("Given Person Object when Save then Return Saved Person")
+    @DisplayName("JUnit test for Given Person Object when findByEmail then Return Person Object")
     @Test
     void testGivenPersonObject_whenFindByEmail_thenReturnPersonObject() {
-        Person person1 = new Person("Gabriel", "K", "gabriel@gmail.com", "vg", "m");
 
-        repository.save(person1);
+        // Given / Arrange
+        repository.save(person0);
 
-        Person savedPerson = repository.findByEmail(person1.getEmail()).get();
+        // When / Act
+        Person savedPerson = repository.findByEmail(person0.getEmail()).get();
 
+        // Then / Assert
         assertNotNull(savedPerson);
-        assertEquals(person1.getId(), savedPerson.getId());
+        assertEquals(person0.getId(), savedPerson.getId());
     }
 
-    @DisplayName("Given Person Object when Save then Return Saved Person")
+    @DisplayName("JUnit test for Given Person Object when Update Person then Return Updated Person Object")
     @Test
     void testGivenPersonObject_whenUpdatePerson_thenReturnUpdatedPersonObject() {
-        Person person1 = new Person("Gabriel", "K", "gabriel@gmail.com", "vg", "m");
 
-        repository.save(person1);
+        // Given / Arrange
+        repository.save(person0);
 
-        Person savedPerson = repository.findById(person1.getId()).get();
-        savedPerson.setFirstName("Gabriel");
-        savedPerson.setEmail("gabriel@gmail.com");
+        // When / Act
+        Person savedPerson = repository.findById(person0.getId()).get();
+        savedPerson.setFirstName("Leonardo");
+        savedPerson.setEmail("leonardo@erudio.com.br");
 
         Person updatedPerson = repository.save(savedPerson);
 
+        // Then / Assert
         assertNotNull(updatedPerson);
-        assertEquals("Gabriel", updatedPerson.getFirstName());
-        assertEquals("gabriel@gmail.com", updatedPerson.getEmail());
+        assertEquals("Leonardo", updatedPerson.getFirstName());
+        assertEquals("leonardo@erudio.com.br", updatedPerson.getEmail());
     }
 
-    @DisplayName("Given Person Object when Save then Return Saved Person")
+    @DisplayName("JUnit test for Given Person Object when Delete then Remove Person")
     @Test
     void testGivenPersonObject_whenDelete_thenRemovePerson() {
-        Person person1 = new Person("Gabriel", "K", "gabriel@gmail.com", "vg", "m");
 
-        repository.save(person1);
+        // Given / Arrange
+        repository.save(person0);
 
-        repository.deleteById(person1.getId());
-        Optional<Person> personOptional = repository.findById(person1.getId());
+        // When / Act
+        repository.deleteById(person0.getId());
 
+        Optional<Person> personOptional = repository.findById(person0.getId());
+
+        // Then / Assert
         assertTrue(personOptional.isEmpty());
     }
 
-    @DisplayName("Given Person Object when Save then Return Saved Person")
+    @DisplayName("JUnit test for Given firstName and lastName when findJPQL then Return Person Object")
     @Test
     void testGivenFirstNameAndLastName_whenFindJPQL_thenReturnPersonObject() {
-        Person person1 = new Person("Gabriel", "Kiyoto", "gabriel@gmail.com", "vg", "m");
 
-        repository.save(person1);
+        // Given / Arrange
+        repository.save(person0);
 
-        String firstName = "Gabriel";
-        String lastName = "Kiyoto";
+        String firstName = "Leandro";
+        String lastName = "Costa";
 
+        // When / Act
         Person savedPerson = repository.findByJPQL(firstName, lastName);
 
+        // Then / Assert
         assertNotNull(savedPerson);
         assertEquals(firstName, savedPerson.getFirstName());
         assertEquals(lastName, savedPerson.getLastName());
     }
 
-    @DisplayName("Given Person Object when Save then Return Saved Person")
+    @DisplayName("JUnit test for Given firstName and lastName when findByJPQLNamedParameters then Return Person Object")
     @Test
-    void testGivenFirstNameAndLastName_whenFindJPQLNamedParameters_thenReturnPersonObject() {
-        Person person1 = new Person("Gabriel", "Kiyoto", "gabriel@gmail.com", "vg", "m");
+    void testGivenFirstNameAndLastName_whenFindByJPQLNamedParameters_thenReturnPersonObject() {
 
-        repository.save(person1);
+        // Given / Arrange
+        repository.save(person0);
 
-        String firstName = "Gabriel";
-        String lastName = "Kiyoto";
+        String firstName = "Leandro";
+        String lastName = "Costa";
 
+        // When / Act
         Person savedPerson = repository.findByJPQLNamedParameters(firstName, lastName);
 
+        // Then / Assert
         assertNotNull(savedPerson);
         assertEquals(firstName, savedPerson.getFirstName());
         assertEquals(lastName, savedPerson.getLastName());
     }
 
-    @DisplayName("Given Person Object when Save then Return Saved Person")
+    @DisplayName("JUnit test for Given firstName and lastName when findByNativeSQL then Return Person Object")
     @Test
-    void testGivenFirstNameAndLastName_whenFindNativeSQL_thenReturnPersonObject() {
-        Person person1 = new Person("Gabriel", "Kiyoto", "gabriel@gmail.com", "vg", "m");
+    void testGivenFirstNameAndLastName_whenFindByNativeSQL_thenReturnPersonObject() {
 
-        repository.save(person1);
+        // Given / Arrange
+        repository.save(person0);
 
-        String firstName = "Gabriel";
-        String lastName = "Kiyoto";
+        String firstName = "Leandro";
+        String lastName = "Costa";
 
+        // When / Act
         Person savedPerson = repository.findByNativeSQL(firstName, lastName);
 
+        // Then / Assert
         assertNotNull(savedPerson);
         assertEquals(firstName, savedPerson.getFirstName());
         assertEquals(lastName, savedPerson.getLastName());
     }
 
-    @DisplayName("Given Person Object when Save then Return Saved Person")
+    @DisplayName("JUnit test for Given firstName and lastName when findByNativeSQLwithNamedParameters then Return Person Object")
     @Test
-    void testGivenFirstNameAndLastName_whenFindNativeSQLWithNamedParameters_thenReturnPersonObject() {
-        Person person1 = new Person("Gabriel", "Kiyoto", "gabriel@gmail.com", "vg", "m");
+    void testGivenFirstNameAndLastName_whenFindByNativeSQLwithNamedParameters_thenReturnPersonObject() {
 
-        repository.save(person1);
+        // Given / Arrange
+        repository.save(person0);
 
-        String firstName = "Gabriel";
-        String lastName = "Kiyoto";
+        String firstName = "Leandro";
+        String lastName = "Costa";
 
+        // When / Act
         Person savedPerson = repository.findByNativeSQLWithNamedParameters(firstName, lastName);
 
+        // Then / Assert
         assertNotNull(savedPerson);
         assertEquals(firstName, savedPerson.getFirstName());
         assertEquals(lastName, savedPerson.getLastName());
