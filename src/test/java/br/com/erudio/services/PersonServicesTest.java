@@ -81,4 +81,14 @@ public class PersonServicesTest {
         assertTrue(personList.isEmpty());
         assertEquals(0, personList.size());
     }
+
+    @Test
+    void testGivenPersonId_WhenFindById_thenReturnPersonObject() {
+        given(repository.findById(anyLong())).willReturn(Optional.of(person));
+
+        Person savedPerson = services.findById(1L);
+
+        assertNotNull(savedPerson);
+        assertEquals("Gabriel", savedPerson.getFirstName());
+    }
 }
