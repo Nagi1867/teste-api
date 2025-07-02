@@ -108,4 +108,15 @@ public class PersonServicesTest {
         assertEquals("Leonardo", savedPerson.getFirstName());
         assertEquals("leonardo@erudio.com.br", savedPerson.getEmail());
     }
+
+    @Test
+    void testGivenPersonId_WhenDeletePerson_thenDoNothing() {
+        person.setId(1L);
+        given(repository.findById(anyLong())).willReturn(Optional.of(person));
+        willDoNothing().given(repository).delete(person);
+
+        services.delete(person.getId());
+
+        verify(repository, times(1)).delete(person);
+    }
 }
