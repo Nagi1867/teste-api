@@ -1,5 +1,6 @@
 package br.com.erudio.services;
 
+import br.com.erudio.exceptions.ResourceNotFoundException;
 import br.com.erudio.model.Person;
 import br.com.erudio.repositories.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,5 +42,16 @@ public class PersonServicesTest {
 
         assertNotNull(savedPerson);
         assertEquals("Gabriel", savedPerson.getFirstName());
+    }
+
+    @Test
+    void testGivenExistingEmail_WhenSavePerson_thenThrowsException() {
+        given(repository.findByEmail(anyString())).willReturn(Optional.of(person));
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            services.create(person);
+        });
+
+        verify(repository, never()).save(any(Person.class));
     }
 }
