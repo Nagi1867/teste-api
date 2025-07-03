@@ -93,4 +93,46 @@ class PersonControllerTest {
 
         response.andExpect(status().isNotFound()).andDo(print());
     }
+
+    @Test
+    void testGivenUpdatePersonId_WhenUpdate_thenReturnUpdatedPersonObject() throws JsonProcessingException, Exception {
+        long personId = 1L;
+        given(services.findById(personId)).willReturn(person);
+        given(services.update(any(Person.class))).willAnswer((invocation) -> invocation.getArgument(0));
+
+        Person updatedPerson = new Person(
+                "Zezinho",
+                "Costa",
+                "leandro@erudio.com.br",
+                "Uberlândia - Minas Gerais - Brasil",
+                "Male"
+        );
+
+        ResultActions response = mockMvc.perform(put("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedPerson)));
+
+        response.andExpect(status().isOk()).andDo(print()).andExpect(jsonPath("$.firstName", is(updatedPerson.getFirstName())));
+    }
+
+    @Test
+    void testGivenUnexistentPerson_WhenUpdate_thenReturnNotFound() throws JsonProcessingException, Exception {
+        long personId = 1L;
+        given(services.findById(personId)).willThrow(ResourceNotFoundException.class);
+        given(services.update(any(Person.class))).willAnswer((invocation) -> invocation.getArgument(1));
+
+        Person updatedPerson = new Person(
+                "Zezinho",
+                "Costa",
+                "leandro@erudio.com.br",
+                "Uberlândia - Minas Gerais - Brasil",
+                "Male"
+        );
+
+        ResultActions response = mockMvc.perform(put("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedPerson)));
+
+        response.andExpect(status().isNotFound()).andDo(print());
+    }
 }
