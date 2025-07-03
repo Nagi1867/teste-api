@@ -13,6 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -52,5 +55,20 @@ class PersonControllerTest {
                 .content(objectMapper.writeValueAsString(person)));
 
         response.andDo(print()).andExpect(status().isOk()).andExpect(jsonPath("$.firstName", is(person.getFirstName())));
+    }
+
+    @Test
+    void testGivenListOfPersons_WhenFindAllPersons_thenReturnPersonsList() throws JsonProcessingException, Exception {
+        List<Person> persons = new ArrayList<>();
+        persons.add(person);
+        persons.add(person);
+        given(services.findAll()).willReturn(persons);
+
+        ResultActions response = mockMvc.perform(get("/person")
+                .content(objectMapper.writeValueAsString(person)));
+
+        response.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.size()", is(persons.size())));
     }
 }
