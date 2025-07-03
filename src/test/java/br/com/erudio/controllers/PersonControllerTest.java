@@ -1,5 +1,6 @@
 package br.com.erudio.controllers;
 
+import br.com.erudio.exceptions.ResourceNotFoundException;
 import br.com.erudio.model.Person;
 import br.com.erudio.services.PersonServices;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -70,5 +71,26 @@ class PersonControllerTest {
         response.andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(jsonPath("$.size()", is(persons.size())));
+    }
+
+    @Test
+    void testGivenPersonId_WhenFindById_thenReturnPersonObject() throws JsonProcessingException, Exception {
+        long personId = 1L;
+        given(services.findById(personId)).willReturn(person);
+
+        ResultActions response = mockMvc.perform(get("/person/{id}", personId));
+
+        response.andExpect(status().isOk()).andDo(print()).andExpect(jsonPath("$.firstName", is(person.getFirstName())));
+    }
+
+    @Test
+    void testGivenInvalidPersonId_WhenFindById_thenReturnNotFound() throws JsonProcessingException, Exception {
+        long personId = 1L;
+        given(services.findById(personId)).willThrow(ResourceNotFoundException.class);
+
+
+        ResultActions response = mockMvc.perform(get("/person/{id}", personId));
+
+        response.andExpect(status().isNotFound()).andDo(print());
     }
 }
