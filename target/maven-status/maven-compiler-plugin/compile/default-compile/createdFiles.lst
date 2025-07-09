@@ -1,0 +1,9 @@
+br\com\erudio\config\OpenAPIConfig.class
+br\com\erudio\repositories\PersonRepository.class
+br\com\erudio\services\PersonServices.class
+br\com\erudio\exceptions\ExceptionResponse.class
+br\com\erudio\controllers\PersonController.class
+br\com\erudio\exceptions\ResourceNotFoundException.class
+br\com\erudio\model\Person.class
+br\com\erudio\exceptions\handler\CustomizedResponseEntityExceptionHandler.class
+br\com\erudio\Startup.class
