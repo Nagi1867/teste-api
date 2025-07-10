@@ -29,10 +29,11 @@ public class AbstractIntegrationTest {
         }
 
         @Override
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         public void initialize(ConfigurableApplicationContext applicationContext) {
             startContainers();
             ConfigurableEnvironment environment = applicationContext.getEnvironment();
-            MapPropertySource testContainers = new MapPropertySource("testContainers", (Map) createConnectionConfiguration());
+            MapPropertySource testContainers = new MapPropertySource("testcontainers", (Map) createConnectionConfiguration());
             environment.getPropertySources().addFirst(testContainers);
         }
     };
